@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free YouTube Thumbnail Maker - Pexels images se pro thumbnails banao aur download karo!">
+    <title>Free YouTube Thumbnail Maker 2025</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        header {
+            background: rgba(0,0,0,0.7);
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        h1 {
+            font-size: 2.8em;
+            margin: 0;
+            text-shadow: 3px 3px 10px black;
+        }
+        p {
+            font-size: 1.3em;
+            margin: 10px 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+        }
+        input[type="text"] {
+            padding: 12px;
+            width: 300px;
+            margin: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+        }
+        button {
+            padding: 12px 30px;
+            background: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #cc0000;
+            transform: scale(1.05);
+        }
+        #imagesGallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        #imagesGallery img {
+            width: 220px;
+            height: auto;
+            margin: 12px;
+            border: 4px solid #fff;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+        #imagesGallery img:hover {
+            transform: scale(1.08);
+            border-color: #ff0000;
+        }
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            background: rgba(0,0,0,0.7);
+            font-size: 0.9em;
+        }
+        canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Free YouTube Thumbnail Maker</h1>
+        <p> Add Title  → Instant Pro Thumbnail Download!</p>
+    </header>
+
+    <div class="container">
+        <h2>Youtube Thumbnail Generator</h2>
+        <input type="text" id="searchQuery" placeholder="Select Background  (e.g., gaming, tech, nature, fitness)">
+        <br>
+        <input type="text" id="titleText" placeholder="Title For Thumbnail  (e.g., TOP 10 GADGETS 2025)">
+        <br><br>
+        <button onclick="searchImages()">Search Images & Generate</button>
+
+        <div id="imagesGallery">Search and Choose Background → Thumbnail Gets Ready!</div>
+
+        <canvas id="thumbnailCanvas" width="1280" height="720"></canvas>
+    </div>
+
+    <footer>
+        <p>Made with ❤️ for YouTubers | 2026 | Free Tool</p>
+        <p>Images powered by Pexels</p>
+    </footer>
+
+    <script>
+        async function searchImages() {
+            let query = document.getElementById('searchQuery').value.trim() || 'abstract';
+            let gallery = document.getElementById('imagesGallery');
+            gallery.innerHTML = '<p>Loading best images...</p>';
+
+            try {
+                let response = await fetch(`https://api.pexels.com/v1/search?query=${query}&per_page=15`, {
+                    headers: { Authorization: 'DkdGeqn8ZZP3j5KbkpDo3qaOMbTllwCQr1gl9SK61PnX400VOxTCPo1H' }
+                });
+
+                if (!response.ok) {
+                    gallery.innerHTML = '<p style="color:red;">API limit ho gayi ya error. Thodi der baad try karo.</p>';
+                    return;
+                }
+
+                let data = await response.json();
+                gallery.innerHTML = '';
+
+                if (data.photos.length === 0) {
+                    gallery.innerHTML = '<p>Koi image nahi mili. Different keyword try karo (e.g., "gaming", "tech", "motivation").</p>';
+                    return;
+                }
+
+                data.photos.forEach(photo => {
+                    let img = document.createElement('img');
+                    img.src = photo.src.medium;
+                    img.alt = photo.alt || 'Background';
+                    img.title = 'Click to make thumbnail';
+                    img.onclick = () => createThumbnail(photo.src.large2x, photo.photographer);
+                    gallery.appendChild(img);
+                });
+
+            } catch (error) {
+                gallery.innerHTML = '<p style="color:red;">Network issue ya browser block kar raha. Live Server use karo.</p>';
+            }
+        }
+
+        function createThumbnail(bgUrl, photographer = '') {
+            let canvas = document.getElementById('thumbnailCanvas');
+            let ctx = canvas.getContext('2d');
+            let title = document.getElementById('titleText').value.trim() || 'MY AWESOME VIDEO';
+
+            let bgImg = new Image();
+            bgImg.crossOrigin = 'anonymous';
+            bgImg.src = bgUrl;
+
+            bgImg.onload = () => {
+                // Background
+                ctx.drawImage(bgImg, 0, 0, 1280, 720);
+
+                // Dark overlay
+                ctx.fillStyle = 'rgba(0,0,0,0.45)';
+                ctx.fillRect(0, 0, 1280, 720);
+
+                // Title text
+                ctx.font = 'bold 100px Arial';
+                ctx.fillStyle = 'white';
+                ctx.strokeStyle = 'black';
+                ctx.lineWidth = 12;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.strokeText(title.toUpperCase(), 640, 360);
+                ctx.fillText(title.toUpperCase(), 640, 360);
+
+                // Credit
+                if (photographer) {
+                    ctx.font = '24px Arial';
+                    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+                    ctx.fillText(`Photo by ${photographer} on Pexels`, 640, 680);
+                }
+
+                // Download
+                let link = document.createElement('a');
+                link.download = 'youtube-thumbnail.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            };
+
+            bgImg.onerror = () => {
+                alert('Image load nahi hui. Dusra background choose karo.');
+            };
+        }
+    </script>
+
+</body>
+</html>
